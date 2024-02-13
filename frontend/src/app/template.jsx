@@ -25,9 +25,9 @@ const Template = ({ children }) => {
   return (
     <div>
       {/* <h1>Template</h1> */}
-      <MDBNavbar expand='lg' light style={{ backgroundColor: '#e3f2fd' }}>
+      <MDBNavbar expand='lg' light className='bg-dark'>
         <MDBContainer fluid>
-          <MDBNavbarBrand href='#'>Navbar</MDBNavbarBrand>
+          <MDBNavbarBrand href='#' className='text-white'>Navbar</MDBNavbarBrand>
           <MDBNavbarToggler
             type='button'
             data-target='#navbarColor02'
@@ -41,18 +41,19 @@ const Template = ({ children }) => {
           <MDBCollapse open={openNavColorThird} navbar>
             <MDBNavbarNav className='me-auto mb-2 mb-lg-0'>
               <MDBNavbarItem className='active'>
-                <MDBNavbarLink aria-current='page' href='/'>
+                <MDBNavbarLink aria-current='page' href='/' className='text-white'>
                   Home
                 </MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink href='/'>What is GraphQL</MDBNavbarLink>
+                <MDBNavbarLink href='https://graphql.org/' className='text-white' target='_blank'>What is GraphQL</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink href='/'>Support</MDBNavbarLink>
+                <MDBNavbarLink href='/' className='text-white'>Support</MDBNavbarLink>
               </MDBNavbarItem>
               <MDBNavbarItem>
-                <MDBNavbarLink href='/login'>Login</MDBNavbarLink>
+                <MDBNavbarLink href='/login' >
+                  <button className='btn btn-info text-dark'>Login</button></MDBNavbarLink>
               </MDBNavbarItem>
             </MDBNavbarNav>
           </MDBCollapse>
