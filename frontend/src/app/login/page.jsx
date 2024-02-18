@@ -38,7 +38,7 @@ const Login = () => {
 
   return (
     <div className='vh-100 bg-body-secondary'>
-      <div className="col-md-4 mx-auto py-5" id='login-page'>
+      <div className="py-5" id='login-page'>
         <div className="card" id='card'>
           <div className="card-body">
             <h1 id='title'>Have an Account ?</h1>
@@ -68,7 +68,7 @@ const Login = () => {
               />
 
               <button type="submit"
-                className="btn btn-danger mb-2" id='button'>Login here</button>
+                className="btn btn-danger mb-2" id='button'>Login</button>
 
               <div>
                 <span>

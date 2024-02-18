@@ -6,6 +6,7 @@ import { useFormik } from 'formik';
 import { enqueueSnackbar } from 'notistack';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import * as css from './signup.css';
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -71,55 +72,60 @@ const Signup = () => {
 
   return (
     <div className='vh-100 bg-body-secondary'>
-      <div className="col-md-4 mx-auto py-5">
-        <div className="card">
+      <div className="py-5" id='signup-page'>
+        <div className="card" id='card'>
           <div className="card-body">
-            <h1>Signup Page</h1>
+            <h1 className='title'>Register Yourself !!!</h1>
             <hr />
+            <div className='image'>
+              <img src="https://www.vhv.rs/dpng/f/509-5097256_new-svg-image-login-logo-user-icon-hd.png" alt="" />
+            </div>
             <form onSubmit={signupForm.handleSubmit}>
-
+              <i class="fa-solid fa-user"></i>
               <label htmlFor="username">Username</label>
-              <span className='error-label text-danger'>  { signupForm.touched.username && signupForm.errors.username}</span>
+              <span className='error-label text-danger'>  {signupForm.touched.username && signupForm.errors.username}</span>
               <input
                 className='form-control p-2 border border-gray-300 rounded-lg'
                 type="text"
                 id='username'
                 value={signupForm.values.username}
                 onChange={signupForm.handleChange}
-                placeholder='Username'
+                placeholder='Enter Your Username'
               />
 
+              <i class="fa-solid fa-envelope"></i>
               <label htmlFor="email">Email</label>
-              <span className='error-label text-danger'>  { signupForm.touched.email && signupForm.errors.email}</span>
+              <span className='error-label text-danger'>  {signupForm.touched.email && signupForm.errors.email}</span>
               <input
                 className='form-control p-2 border border-gray-300 rounded-lg'
                 type="text"
                 id='email'
                 value={signupForm.values.email}
                 onChange={signupForm.handleChange}
-                placeholder='Email'
+                placeholder='Enter Your Email'
               />
 
+              <i class="fa-solid fa-key"></i>
               <label htmlFor="password">Password</label>
-              <span className='error-label text-danger'>  { signupForm.touched.password && signupForm.errors.password}</span>
+              <span className='error-label text-danger'>  {signupForm.touched.password && signupForm.errors.password}</span>
               <input
                 className='form-control p-2 border border-gray-300 rounded-lg'
                 type="password"
                 id='password'
                 value={signupForm.values.password}
                 onChange={signupForm.handleChange}
-                placeholder='Password'
+                placeholder='Enter Your Password'
               />
 
               <button
                 type='submit'
-                className="btn btn-primary mt-4 mb-2">Signup here</button>
+                className="btn btn-danger mt-4 mb-2" id='button'>Signup</button>
             </form>
 
             <div>
               <span>
                 Already have an account?{" "}
-                <Link href="/login">Login here</Link>
+                <Link href="/login" id='login'>Login here</Link>
               </span>
             </div>
 
