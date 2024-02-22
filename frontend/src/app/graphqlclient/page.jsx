@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Nav from 'react-bootstrap/Nav';
+import * as css from './client.css';
 const GraphQLClient = () => {
 
     const [query, setQuery] = useState('');
@@ -28,7 +29,12 @@ const GraphQLClient = () => {
 
     return (
         <div className='vh-100 bg-dark'>
-            <h1 className='text-center text-white'>GraphQL Client</h1>
+            <div className='d-flex justify-content-between'>
+                <input className='bg-dark border border-3 rounded-5 text-white m-2' id="url" type="text" defaultValue={'  http://localhost:3000'} />
+
+                <h1 className='text-white fst-italic mt-1'>GraphQL Client</h1>
+                <button className='' id="logoutButton" type='submit'>Logout</button>
+            </div>
             <Nav className='bg-primary-subtle' justify variant="tabs" defaultActiveKey="/home">
                 <Nav.Item>
                     <Nav.Link href="/home">Active</Nav.Link>

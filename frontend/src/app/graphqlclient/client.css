@@ -1,0 +1,28 @@
+#logoutButton {
+    margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 8%;
+  /* padding: 10px; */
+  background-color: #776262;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition-duration: 0.4s;
+}
+
+#logoutButton:hover {
+  background-color: #4fdeeed5;
+  color: black;
+}
+
+#url{
+    width: 18%;
+}
+
