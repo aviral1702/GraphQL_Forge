@@ -6,6 +6,7 @@ const GraphQLClient = () => {
 
     const [query, setQuery] = useState('');
     const [response, setResponse] = useState('');
+    const [variables, setVariables] = useState("");
 
     const makeQuery = async () => {
         const query = document.getElementById('query').value;
@@ -16,11 +17,7 @@ const GraphQLClient = () => {
             },
             body: JSON.stringify({
                 query,
-                variables: {
-                    "productName": "abcde",
-                    "category": "aklsjee",
-                    "price": 563455
-                }
+                variables
             })
         });
         const res = await response.json();
@@ -61,12 +58,15 @@ const GraphQLClient = () => {
                     </div>
                     <div className="col-md-4">
                         <div className="form-group text-white">
-                            <label htmlFor="query">Query</label>
-                            <textarea className="form-control" id="query" rows="15" onChange={
+                            <label htmlFor="query">Operation</label>
+                            <textarea className="form-control" id="query" rows="10" onChange={
                                 (e) => setQuery(e.target.value)
                             } value={
                                 query
                             }></textarea>
+                            <label htmlFor="variables">Variables</label>
+                            <textarea className="form-control" id="variables" rows="5" onChange={(e) => setVariables(e.target.value)}
+                                value={variables}></textarea>
                         </div>
                         <div className="text-center">
                             <button onClick={makeQuery} className="btn btn-primary mt-3  ">Make Query</button>
