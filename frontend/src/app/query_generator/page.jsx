@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import Editor from '@monaco-editor/react';
 
 const QueryGenerator = () => {
   const [text, setText] = useState("");
@@ -24,7 +25,7 @@ const QueryGenerator = () => {
         resolvers: schema.resolvers
     });
     
-    server.listen({port: 9000}).then(({url}) => console.log("Server is running")));
+    server.listen({port: 9000}).then(({url}) => console.log("Server is running"));
     mongoose.exports = mongoose;
     
     `
@@ -187,11 +188,18 @@ const QueryGenerator = () => {
   return (
     <div className='bg-dark'>
       <div className='container-fluid'>
-        <div className='row'>
-          <div className='col-md-4'>
-            <div className='form-group text-white'>
-              <label htmlFor='document'>Query</label>
-              <textarea className='form-control' id='document' rows='15'></textarea>
+        <div className='row p-4'>
+          <div className="col-md-4">
+            <div className="card">
+              <div className="card-header">
+                <h4>Query</h4>
+              </div>
+              <div className="card-body">
+              <p>To get started, provide the MongoDB URL for the database you want to connect to.</p>
+                <label htmlFor="MongoDB URL">MongoDB URL :&nbsp;</label>
+                <input type="text" id="MongoDB URL" value={mongoDBurl} onChange={(e) => setMongoDBurl(e.target.value)}
+                />
+              </div>
             </div>
           </div>
           <div className='col-md-4'>
@@ -199,7 +207,7 @@ const QueryGenerator = () => {
               <label htmlFor='query'>Data Structure</label>
               <textarea className='form-control' id='query' rows='15'></textarea>
             </div>
-            <div className='text-center'>
+            {/* <div className='text-center'>
               <button
                 className='btn btn-primary mt-3'
                 id='generateResponse'
@@ -207,48 +215,54 @@ const QueryGenerator = () => {
               >
                 Generate Response
               </button>
-            </div>
+            </div> */}
           </div>
           <div className='col-md-4'>
             <div className='form-group text-white'>
               <label htmlFor='response'>Response</label>
               <textarea className='form-control' id='response' rows='15' value={text} onChange={(e) => setText(e.target.value)}></textarea>
-              <button onClick={handleCopyClick}>
-                <i class="fa-regular fa-copy"></i>  Copy
-              </button>
             </div>
           </div>
         </div>
 
-        <div className="row">
+        <div className="row p-4">
           <div className="col-md-4">
             <div className="card">
-              <div className="card-header">
+              <div className="card-header d-flex justify-content-between">
                 <h4>App.js Code</h4>
+                <button onClick={handleCopyClick} className=''>
+                  <i className="fa-regular fa-copy"></i>  Copy
+                </button>
               </div>
               <div className="card-body">
-                <pre>{generateAppCode()}</pre>
+                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateAppCode()} />
               </div>
             </div>
           </div>
           <div className="col-md-4">
             <div className="card">
-              <div className="card-header">
+              <div className="card-header d-flex justify-content-between">
                 <h4>GraphQLSchema.js Code</h4>
+                <button onClick={handleCopyClick} className=''>
+                  <i className="fa-regular fa-copy"></i>  Copy
+                </button>
               </div>
               <div className="card-body">
-                <pre>{generateSchema()}</pre>
+                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateSchema()} />
               </div>
             </div>
 
           </div>
           <div className="col-md-4">
             <div className="card">
-              <div className="card-header">
+              <div className="card-header d-flex justify-content-between">
                 <h4>Schema.js Code</h4>
+                <button onClick={handleCopyClick} className=''>
+                  <i className="fa-regular fa-copy"></i>  Copy
+                </button>
               </div>
               <div className="card-body">
-                <pre>{generateMongoDBSchema()}</pre>
+                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateMongoDBSchema()} />
               </div>
             </div>
           </div>

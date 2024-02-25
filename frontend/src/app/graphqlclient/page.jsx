@@ -61,9 +61,7 @@ const GraphQLClient = () => {
                             <label htmlFor="query">Operation</label>
                             <textarea className="form-control" id="query" rows="10" onChange={
                                 (e) => setQuery(e.target.value)
-                            } value={
-                                query
-                            }></textarea>
+                            } value={query}></textarea>
                             <label htmlFor="variables">Variables</label>
                             <textarea className="form-control" id="variables" rows="5" onChange={(e) => setVariables(e.target.value)}
                                 value={variables}></textarea>
