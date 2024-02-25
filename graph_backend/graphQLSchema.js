@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express');
 const ProductModel = require("./models/productSchema");
 
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 
 exports.typeDefs = gql `
 

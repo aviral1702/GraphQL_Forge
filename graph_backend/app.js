@@ -1,6 +1,3 @@
-const bodyParser = require('body-parser');
-const express  = require('express');
-const cors = require('cors');
 const { ApolloServer } = require('apollo-server');
 const mongoose = require('mongoose');
 const url = "mongodb+srv://aviral:1702@cluster0.i2jaaun.mongodb.net/";
