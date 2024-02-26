@@ -5,6 +5,46 @@ import Editor from '@monaco-editor/react';
 const QueryGenerator = () => {
   const [text, setText] = useState("");
   const [mongoDBurl, setMongoDBurl] = useState('');
+  const [schema_name, setschema_name] = useState('');
+  const [model_name, setmodel_name] = useState('')
+
+  const [selTypes, setSelTypes] = useState([{
+    name: 'Product',
+    fields: [
+      {
+        name: 'id',
+        type: 'ID'
+      },
+      {
+        name: 'category',
+        type: 'String'
+      },
+      {
+        name: 'productName',
+        type: 'String'
+      },
+      {
+        name: 'price',
+        type: 'Int'
+      },
+      {
+        name: 'colors',
+        type: '[String]'
+      }
+    ]
+  }])
+
+  const [selQueries, setSelQueries] = useState([{
+    name: 'getProduct',
+    parameters: [
+      {
+        name: 'id',
+        type: 'ID',
+        required: true
+      }
+    ],
+    returnType: 'Product'
+  }])
 
   const generateAppCode = () => {
     return `const express  = require('express');
@@ -158,7 +198,7 @@ const QueryGenerator = () => {
   const generateMongoDBSchema = () => {
     return `const mongoose = require('mongoose');
 
-    const productsListSchema = new mongoose.Schema({
+    const ${schema_name} = new mongoose.Schema({
         category: String,
         productName: String,
         price: Number,
@@ -166,7 +206,7 @@ const QueryGenerator = () => {
         imgPath: String,
     })
     
-    module.exports = mongoose.model('productlists', productsListSchema);`
+    module.exports = mongoose.model('${model_name}', ${schema_name});`
   }
 
   const handleCopyClick = async () => {
@@ -182,51 +222,24 @@ const QueryGenerator = () => {
     }
   };
 
-  const generateResponse = () => {
-    const query = document.getElementById('query').value;
-  }
   return (
     <div className='bg-dark'>
       <div className='container-fluid'>
         <div className='row p-4'>
-          <div className="col-md-4">
+          <div className="col-md-5">
             <div className="card">
               <div className="card-header">
                 <h4>Query</h4>
               </div>
               <div className="card-body">
-              <p>To get started, provide the MongoDB URL for the database you want to connect to.</p>
+                <p>To get started, provide the MongoDB URL for the database you want to connect to.</p>
                 <label htmlFor="MongoDB URL">MongoDB URL :&nbsp;</label>
-                <input type="text" id="MongoDB URL" value={mongoDBurl} onChange={(e) => setMongoDBurl(e.target.value)}
+                <input type="text" className='form-control' id="MongoDB URL" value={mongoDBurl} onChange={(e) => setMongoDBurl(e.target.value)}
                 />
               </div>
             </div>
           </div>
-          <div className='col-md-4'>
-            <div className='form-group text-white'>
-              <label htmlFor='query'>Data Structure</label>
-              <textarea className='form-control' id='query' rows='15'></textarea>
-            </div>
-            {/* <div className='text-center'>
-              <button
-                className='btn btn-primary mt-3'
-                id='generateResponse'
-                onClick={generateResponse}
-              >
-                Generate Response
-              </button>
-            </div> */}
-          </div>
-          <div className='col-md-4'>
-            <div className='form-group text-white'>
-              <label htmlFor='response'>Response</label>
-              <textarea className='form-control' id='response' rows='15' value={text} onChange={(e) => setText(e.target.value)}></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div className="row p-4">
-          <div className="col-md-4">
+          <div className="col-md-7">
             <div className="card">
               <div className="card-header d-flex justify-content-between">
                 <h4>App.js Code</h4>
@@ -235,40 +248,74 @@ const QueryGenerator = () => {
                 </button>
               </div>
               <div className="card-body">
-                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateAppCode()} />
+                <Editor height="50vh" defaultLanguage="javascript" value={generateAppCode()} />
               </div>
             </div>
           </div>
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-header d-flex justify-content-between">
-                <h4>GraphQLSchema.js Code</h4>
-                <button onClick={handleCopyClick} className=''>
-                  <i className="fa-regular fa-copy"></i>  Copy
-                </button>
-              </div>
-              <div className="card-body">
-                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateSchema()} />
-              </div>
-            </div>
+        </div>
 
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-header d-flex justify-content-between">
-                <h4>Schema.js Code</h4>
-                <button onClick={handleCopyClick} className=''>
-                  <i className="fa-regular fa-copy"></i>  Copy
-                </button>
+        <div className="row p-4">
+          <div className='col-md-5'>
+            <div className='card'>
+              <div className='card-header'>
+                <h4>Schema</h4>
               </div>
               <div className="card-body">
-                <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateMongoDBSchema()} />
+                <p>Schema is a collection of fields that define the structure of the data that can be queried.</p>
+                <label htmlFor="schema_name">Name of Schema : &nbsp;</label>
+                <input type="text" className='form-control' value={schema_name} onChange={(e) => setschema_name(e.target.value)} />
+                <label htmlFor="model_name">Name of Model : &nbsp;</label>
+                <input type="text" className='form-control' value={model_name} onChange={(e) => setmodel_name(e.target.value)}/>
+
               </div>
+            </div>
+          </div>
+      
+        <div className="col-md-7">
+          <div className="card">
+            <div className="card-header d-flex justify-content-between">
+              <h4>Schema.js Code</h4>
+              <button onClick={handleCopyClick} className=''>
+                <i className="fa-regular fa-copy"></i>  Copy
+              </button>
+            </div>
+            <div className="card-body">
+              <Editor height="50vh" defaultLanguage="javascript" value={generateMongoDBSchema()} />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row p-4">
+        <div className='col-md-5'>
+          <div className='card'>
+            <div className='card-header'>
+              <h4>Operations</h4>
+            </div>
+            <div className="card-body">
+
+              <div className='types-editor'>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div className="col-md-7">
+          <div className="card">
+            <div className="card-header d-flex justify-content-between">
+              <h4>GraphQLSchema.js Code</h4>
+              <button onClick={handleCopyClick} className=''>
+                <i className="fa-regular fa-copy"></i>  Copy
+              </button>
+            </div>
+            <div className="card-body">
+              <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateSchema()} />
             </div>
           </div>
         </div>
       </div>
     </div>
+    </div >
   )
 }
 
