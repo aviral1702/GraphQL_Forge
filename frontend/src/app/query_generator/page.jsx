@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
+import videoBg from '../assets/Untitled_design.mp4';
 
 const QueryGenerator = () => {
   const [text, setText] = useState("");
@@ -224,6 +225,7 @@ const QueryGenerator = () => {
 
   return (
     <div className='bg-dark'>
+      <video src={videoBg}></video>
       <div className='container-fluid'>
         <div className='row p-4'>
           <div className="col-md-5">
@@ -248,7 +250,7 @@ const QueryGenerator = () => {
                 </button>
               </div>
               <div className="card-body">
-                <Editor height="50vh" defaultLanguage="javascript" value={generateAppCode()} />
+                <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" value={generateAppCode()} />
               </div>
             </div>
           </div>
@@ -280,7 +282,7 @@ const QueryGenerator = () => {
               </button>
             </div>
             <div className="card-body">
-              <Editor height="50vh" defaultLanguage="javascript" value={generateMongoDBSchema()} />
+              <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" value={generateMongoDBSchema()} />
             </div>
           </div>
         </div>
@@ -309,7 +311,7 @@ const QueryGenerator = () => {
               </button>
             </div>
             <div className="card-body">
-              <Editor height="50vh" defaultLanguage="javascript" defaultValue={generateSchema()} />
+              <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" defaultValue={generateSchema()} />
             </div>
           </div>
         </div>
