@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
-import videoBg from '../assets/Untitled_design.mp4';
+// import videoBg from '../assets/Untitled_design.mp4';
 
 const QueryGenerator = () => {
   const [text, setText] = useState("");
@@ -225,7 +225,7 @@ const QueryGenerator = () => {
 
   return (
     <div className='bg-dark'>
-      <video src={videoBg}></video>
+      {/* <video src={videoBg}></video> */}
       <div className='container-fluid'>
         <div className='row p-4'>
           <div className="col-md-5">

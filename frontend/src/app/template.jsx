@@ -14,6 +14,8 @@ import {
   MDBNavbarBrand,
   MDBCollapse
 } from 'mdb-react-ui-kit';
+import { useAppContext } from './AppContext';
+import { Navigate } from 'react-router-dom';
 
 const Template = ({ children }) => {
   // useEffect(() => {
@@ -21,6 +23,18 @@ const Template = ({ children }) => {
   // }   , []);
 
   const [openNavColorThird, setOpenNavColorThird] = useState(false);
+
+  // const { loggedIn, setLoggedIn } = useAppContext();
+
+  // const sessionData = JSON.parse(sessionStorage.getItem('user'));
+  // const [currentUser, setCurrentUser] = useState(sessionData);
+
+  // const logout = () => {  
+  //   sessionStorage.removeItem('user');
+  //   setCurrentUser(null);
+  //   setLoggedIn(false);
+  //   Navigate('/login');
+  // }
 
   return (
     <div>

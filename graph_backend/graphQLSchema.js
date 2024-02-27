@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server-express');
 const ProductModel = require("./models/productSchema");
 
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');  
 
 exports.typeDefs = gql `
 
@@ -9,7 +9,7 @@ type Product {
     id: ID
     category: String
     productName: String
-    price: Int!
+    price: Int
     colors: [String!]
 }
 
@@ -29,7 +29,7 @@ const db_url = 'mongodb+srv://aviral:1702@cluster0.i2jaaun.mongodb.net/products'
 
 
 const connect = async () => {
-    await mongoose.connect(db_url, { useNewUrlParser: true });
+    await mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true});
 }
 
 
@@ -106,7 +106,7 @@ exports.resolvers = {
         deleteProduct:  async (parent, args) => {
             try {
                 await connect();
-                await ProductModel.findOneAndRemove({_id: args.id});
+                await ProductModel.findOneAndDelete({_id: args.id});
                 return true;
             } catch (error) {
                 console.log('Error while delete:',error);
