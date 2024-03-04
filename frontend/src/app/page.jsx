@@ -16,7 +16,7 @@ const Home = () => {
         backgroundSize: "cover"
       }}>
         <div className='row px-5'>
-          <p className="fs-2 pt-5 text-black" id='intro'>
+          <p className="fs-2 pt-5 text-white" id='intro'>
             If you've seen a GraphQL query before, you know that the GraphQL query language is basically about selecting fields on objects. So, for example, in the following query:
           </p>
         </div>
