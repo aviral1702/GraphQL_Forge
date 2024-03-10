@@ -8,6 +8,59 @@ const EntityHandler = () => {
     const fieldNameRef = useRef(null);
     const fieldTypeRef = useRef(null);
 
+    const [queryList, setQueryList] = useState([
+        {
+            name: 'getProduct',
+            parameters: [
+                {
+                    name: 'id',
+                    type: 'ID',
+                    required: true
+                }
+            ],
+            returnType: 'Product',
+
+        }
+    ])
+
+    const [mutationList, setMutationList] = useState([
+        {
+            name: 'updateProduct',
+            parameters: [
+                {
+                    name: 'id',
+                    type: 'ID',
+                    required: true
+                },
+                {
+                    name: 'category',
+                    type: 'String',
+                    required: true
+                },
+                {
+                    name: 'productName',
+                    type: 'String',
+                    required: true
+                },
+                {
+                    name: 'price',
+                    type: 'Int',
+                    required: true
+                },
+                {
+                    name: 'colors',
+                    type: '[String]',
+                    required: true
+                },
+                {
+                    name: 'imgPath',
+                    type: 'String',
+                    required: true
+                }
+            ],
+        }
+    ])
+
     const [entityList, setEntityList] = useState([{
         name: 'Product',
         fields: [
@@ -38,9 +91,25 @@ const EntityHandler = () => {
         return entityList.map((entity) => {
             return `\n\ntype ${entity.name} {
                 ${entity.fields.map((field) => {
-                    return `${field.name}: ${field.type}`
-                })}
+                return `${field.name}: ${field.type}`
+            })}
             }`
+        })
+    }
+
+    const generateQueryCode = () => {
+        return queryList.map((query) => {
+            return `\n\n${query.name}(${query.parameters.map((parameter) => {
+                return `${parameter.name}: ${parameter.type}${parameter.required ? '!' : ''}`
+            })}): ${query.returnType}`
+        })
+    }
+
+    const generateMutationCode = () => {
+        return mutationList.map((mutation) => {
+            return `\n\n${mutation.name}(${mutation.parameters.map((parameter) => {
+                return `${parameter.name}: ${parameter.type}${parameter.required ? '!' : ''}`
+            })}): ${mutation.returnType}`
         })
     }
 
@@ -53,16 +122,12 @@ const EntityHandler = () => {
         exports.typeDefs = gql \`
         
         ${generateEntityCode()}
-        
-        type Query {
-            getProductsList: [Product]
-            getProduct(id: ID!): Product
-        }
+            type Query {
+                ${generateQueryCode()}
+            }
         
         type Mutation {
-            updateProduct(id: ID! ,category: String!, productName: String!, price: Int!, colors: [String!], imgPath: String!): Product
-            addProduct(category: String, productName: String!, price: Int, colors: [String!], imgPath: String): Product
-            deleteProduct(id: ID!): Boolean!
+            ${generateMutationCode()}
         } \`
         
         
@@ -164,18 +229,18 @@ const EntityHandler = () => {
 
     const handleCopyClick = async () => {
         try {
-          await navigator.clipboard.writeText(text);
-          alert("Copied to clipboard!");
+            await navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
         } catch (err) {
-          console.error(
-            "Unable to copy to clipboard.",
-            err
-          );
-          alert("Copy to clipboard failed.");
+            console.error(
+                "Unable to copy to clipboard.",
+                err
+            );
+            alert("Copy to clipboard failed.");
         }
-      };
+    };
 
-      const addEntity = () => {
+    const addEntity = () => {
         setEntityList([...entityList, {
             name: 'Untitled Entity',
             fields: [
@@ -185,10 +250,26 @@ const EntityHandler = () => {
                 }
             ]
         }])
-      }
+    }
 
-      const addField = (index) => {
-        if(fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
+    const addQuery = () => {
+        setQueryList([...queryList, {
+            name: 'Untitled Query',
+            parameters: [
+                {
+                    name: 'id',
+                    type: 'ID',
+                    required: true
+                }
+            ],
+            returnType: 'Product'
+        }])
+    }
+
+
+
+    const addField = (index) => {
+        if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
         const newEntityList = [...entityList];
         newEntityList[index].fields.push({
             name: fieldNameRef.current.value,
@@ -197,7 +278,19 @@ const EntityHandler = () => {
         setEntityList(newEntityList);
         fieldNameRef.current.value = '';
         fieldTypeRef.current.value = '';
-      }
+    }
+
+    const addParameter = (index) => {
+        if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
+        const newQueryList = [...queryList];
+        newQueryList[index].parameters.push({
+            name: fieldNameRef.current.value,
+            type: fieldTypeRef.current.value
+        })
+        setQueryList(newQueryList);
+        fieldNameRef.current.value = '';
+        fieldTypeRef.current.value = '';
+    }
 
     return (
         <div className="row p-4">
@@ -209,30 +302,61 @@ const EntityHandler = () => {
                             {
                                 entityList.map((entity, index) => {
                                     return <Accordion.Item eventKey={index}>
-                                    <Accordion.Header>{entity.name}</Accordion.Header>
-                                    <Accordion.Body>
-                                      <ul className='list-group'>
-                                        {
-                                            entity.fields.map((field) => {
-                                                return <li className='list-group-item d-flex justify-content-between'>
-                                                    <p>{field.name} : {field.type}</p>
-                                                    <button className='btn btn-danger'>Remove</button>
-                                                </li>
-                                            })
-                                        }
-                                      </ul>
-                                      <div className="input-group">
-                                        <input type="text" className="form-control" ref={fieldNameRef} />
-                                        <input type="text" className="form-control" ref={fieldTypeRef} />
-                                        <button className='btn btn-primary' onClick={e => addField(index)}>Add Field</button>
-                                      </div>
-                                    </Accordion.Body>
-                                  </Accordion.Item>
+                                        <Accordion.Header>{entity.name}</Accordion.Header>
+                                        <Accordion.Body>
+                                            <ul className='list-group'>
+                                                {
+                                                    entity.fields.map((field) => {
+                                                        return <li className='list-group-item d-flex justify-content-between'>
+                                                            <p>{field.name} : {field.type}</p>
+                                                            <button className='btn btn-danger'>Remove</button>
+                                                        </li>
+                                                    })
+                                                }
+                                            </ul>
+                                            <div className="input-group">
+                                                <input type="text" className="form-control" ref={fieldNameRef} />
+                                                <input type="text" className="form-control" ref={fieldTypeRef} />
+                                                <button className='btn btn-primary' onClick={e => addField(index)}>Add Field</button>
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
                                 })
+                                
                             }
-      
-      </Accordion>
+
+                        </Accordion>
                         <button className='btn btn-primary' onClick={addEntity}>Add Entity</button>
+
+                        <Accordion defaultActiveKey="0">
+                            {
+                                queryList.map((query, index) => {
+                                    return <Accordion.Item eventKey={index}>
+                                        <Accordion.Header>{query.name}</Accordion.Header>
+                                        <Accordion.Body>
+                                            <ul className='list-group'>
+                                                {
+                                                    query.parameters.map((parameter) => {
+                                                        return <li className='list-group-item d-flex justify-content-between'>
+                                                            <p>{parameter.name} : {parameter.type}</p>
+                                                            <button className='btn btn-danger'>Remove</button>
+                                                        </li>
+                                                    })
+                                                }
+                                            </ul>
+                                            <div className="input-group">
+                                                <input type="text" className="form-control" ref={fieldNameRef} />
+                                                <input type="text" className="form-control" ref={fieldTypeRef} />
+                                                <button className='btn btn-primary' onClick={e => addParameter(index)}>Add Parameter</button>
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                })
+                                
+                            }
+
+                        </Accordion>
+                        <button className='btn btn-primary' onClick={addQuery}>Add Query</button>
                     </div>
                     <div className="card-body">
 

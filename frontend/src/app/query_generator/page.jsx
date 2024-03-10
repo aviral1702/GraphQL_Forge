@@ -147,6 +147,8 @@ const QueryGenerator = () => {
 
 
         <EntityHandler />
+
+        
       </div>
     </div >
   )
