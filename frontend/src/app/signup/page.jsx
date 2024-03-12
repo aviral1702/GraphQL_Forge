@@ -3,9 +3,8 @@ import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from 'formik';
-import { enqueueSnackbar } from 'notistack';
 import * as Yup from 'yup';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import * as css from './signup.css';
 
 const SignupSchema = Yup.object().shape({
@@ -44,30 +43,13 @@ const Signup = () => {
 
       if (res.status === 200) {
         resetForm();
-        // enqueueSnackbar('Signup successful', {
-        //   variant: 'success',
-        //   anchorOrigin: {
-        //     vertical: 'top',
-        //     horizontal: 'right'
-        //   }
-        // });
         toast.success('Signup successful');
         router.push('/login');
       } else {
-        // enqueueSnackbar('Something went wrong', {
-        //   variant: 'error',
-        //   anchorOrigin: {
-        //     vertical: 'top',
-        //     horizontal: 'right'
-        //   }
-        // })
         toast.error('Something went wrong');
       }
-
     },
-
     validationSchema: SignupSchema
-
   });
 
   return (
@@ -120,6 +102,7 @@ const Signup = () => {
               <button
                 type='submit'
                 className="btn btn-danger mt-4 mb-2" id='button'>Signup</button>
+                <Toaster />
             </form>
 
             <div>

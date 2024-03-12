@@ -8,5 +8,4 @@ const productsListSchema = new mongoose.Schema({
     imgPath: String,
 })
 
-// module.exports = mongoose.model('productlists', productsListSchema);
 module.exports = productsListSchema;

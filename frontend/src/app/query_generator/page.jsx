@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
 import EntityHandler from './EntityHandler';
+import toast,{Toaster} from 'react-hot-toast';
 // import videoBg from '../assets/Untitled_design.mp4';
 
 const QueryGenerator = () => {
@@ -9,8 +10,6 @@ const QueryGenerator = () => {
   const [mongoDBurl, setMongoDBurl] = useState('');
   const [schema_name, setschema_name] = useState('');
   const [model_name, setmodel_name] = useState('')
-
-
 
   const [selQueries, setSelQueries] = useState([{
     name: 'getProduct',
@@ -24,10 +23,10 @@ const QueryGenerator = () => {
     returnType: 'Product'
   }])
 
-
-
+  //App.js Code
   const generateAppCode = () => {
-    return `const express  = require('express');
+    return `
+    const express  = require('express');
     const cors = require('cors');
     const { ApolloServer } = require('apollo-server');
     const mongoose = require('mongoose');
@@ -47,14 +46,13 @@ const QueryGenerator = () => {
     
     server.listen({port: 9000}).then(({url}) => console.log("Server is running"));
     mongoose.exports = mongoose;
-    
     `
   }
 
-
-
+  //Schema.js Code
   const generateMongoDBSchema = () => {
-    return `const mongoose = require('mongoose');
+    return `
+    const mongoose = require('mongoose');
 
     const ${schema_name} = new mongoose.Schema({
         category: String,
@@ -67,16 +65,17 @@ const QueryGenerator = () => {
     module.exports = mongoose.model('${model_name}', ${schema_name});`
   }
 
+  //Copy to Clipboard
   const handleCopyClick = async () => {
     try {
       await navigator.clipboard.writeText(text);
-      alert("Copied to clipboard!");
+      toast.success("Copied to clipboard!");
     } catch (err) {
       console.error(
         "Unable to copy to clipboard.",
         err
       );
-      alert("Copy to clipboard failed.");
+      toast.error("Copy to clipboard failed.");
     }
   };
 
@@ -85,6 +84,7 @@ const QueryGenerator = () => {
       {/* <video src={videoBg}></video> */}
       <div className='container-fluid'>
         <div className='row p-4'>
+          {/* For MongoDB URL */}
           <div className="col-md-5">
             <div className="card">
               <div className="card-header">
@@ -98,13 +98,15 @@ const QueryGenerator = () => {
               </div>
             </div>
           </div>
+          {/* For App.js code */}
           <div className="col-md-7">
             <div className="card">
               <div className="card-header d-flex justify-content-between">
                 <h4>App.js Code</h4>
-                <button onClick={handleCopyClick} className=''>
+                <button onClick={handleCopyClick} className='btn btn-primary btn-outline-primary btn-rounded'>
                   <i className="fa-regular fa-copy"></i>  Copy
                 </button>
+                <Toaster />
               </div>
               <div className="card-body">
                 <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" value={generateAppCode()} />
@@ -114,6 +116,7 @@ const QueryGenerator = () => {
         </div>
 
         <div className="row p-4">
+          {/* For Schema Details */}
           <div className='col-md-5'>
             <div className='card'>
               <div className='card-header'>
@@ -125,18 +128,18 @@ const QueryGenerator = () => {
                 <input type="text" className='form-control' value={schema_name} onChange={(e) => setschema_name(e.target.value)} />
                 <label htmlFor="model_name">Name of Model : &nbsp;</label>
                 <input type="text" className='form-control' value={model_name} onChange={(e) => setmodel_name(e.target.value)} />
-
               </div>
             </div>
           </div>
-
+          {/* For Schema.js code */}
           <div className="col-md-7">
             <div className="card">
               <div className="card-header d-flex justify-content-between">
                 <h4>Schema.js Code</h4>
-                <button onClick={handleCopyClick} className=''>
+                <button onClick={handleCopyClick} className='btn btn-primary btn-outline-primary btn-rounded'>
                   <i className="fa-regular fa-copy"></i>  Copy
                 </button>
+                <Toaster />
               </div>
               <div className="card-body">
                 <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" value={generateMongoDBSchema()} />
@@ -145,10 +148,8 @@ const QueryGenerator = () => {
           </div>
         </div>
 
-
         <EntityHandler />
 
-        
       </div>
     </div >
   )

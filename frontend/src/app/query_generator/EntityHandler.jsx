@@ -1,12 +1,40 @@
 'use client';
 import { Editor } from '@monaco-editor/react';
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react';
 import { Accordion } from 'react-bootstrap';
+import toast, { Toaster } from 'react-hot-toast';
 
 const EntityHandler = () => {
 
     const fieldNameRef = useRef(null);
     const fieldTypeRef = useRef(null);
+
+    //Use state for entityList, queryList, mutationList
+    const [entityList, setEntityList] = useState([{
+        name: 'Product',
+        fields: [
+            {
+                name: 'id',
+                type: 'ID'
+            },
+            {
+                name: 'category',
+                type: 'String'
+            },
+            {
+                name: 'productName',
+                type: 'String'
+            },
+            {
+                name: 'price',
+                type: 'Int'
+            },
+            {
+                name: 'colors',
+                type: '[String]'
+            }
+        ]
+    }])
 
     const [queryList, setQueryList] = useState([
         {
@@ -61,35 +89,11 @@ const EntityHandler = () => {
         }
     ])
 
-    const [entityList, setEntityList] = useState([{
-        name: 'Product',
-        fields: [
-            {
-                name: 'id',
-                type: 'ID'
-            },
-            {
-                name: 'category',
-                type: 'String'
-            },
-            {
-                name: 'productName',
-                type: 'String'
-            },
-            {
-                name: 'price',
-                type: 'Int'
-            },
-            {
-                name: 'colors',
-                type: '[String]'
-            }
-        ]
-    }])
-
+    //Generate Entity Fields
     const generateEntityCode = () => {
         return entityList.map((entity) => {
-            return `\n\ntype ${entity.name} {
+            return `\n
+            type ${entity.name} {
                 ${entity.fields.map((field) => {
                 return `${field.name}: ${field.type}`
             })}
@@ -97,51 +101,51 @@ const EntityHandler = () => {
         })
     }
 
+    //Generate Query Parameters
     const generateQueryCode = () => {
         return queryList.map((query) => {
-            return `\n\n${query.name}(${query.parameters.map((parameter) => {
+            return `\n
+            type Query{
+                ${query.name}(${query.parameters.map((parameter) => {
                 return `${parameter.name}: ${parameter.type}${parameter.required ? '!' : ''}`
-            })}): ${query.returnType}`
+            })}): ${query.returnType}
+            }`
         })
     }
 
+    //Generate Mutation Parameters
     const generateMutationCode = () => {
         return mutationList.map((mutation) => {
-            return `\n\n${mutation.name}(${mutation.parameters.map((parameter) => {
+            return `\n
+            type Mutation{
+                ${mutation.name}(${mutation.parameters.map((parameter) => {
                 return `${parameter.name}: ${parameter.type}${parameter.required ? '!' : ''}`
-            })}): ${mutation.returnType}`
+            })}): ${mutation.returnType}
+            }`
         })
     }
 
+    //Generate Backend Code
     const generateSchema = () => {
-        return `const { gql } = require('apollo-server-express');
+        return `
+        const { gql } = require('apollo-server-express');
         const ProductModel = require("./models/productSchema");
         
         const mongoose = require('mongoose');
         
         exports.typeDefs = gql \`
-        
         ${generateEntityCode()}
-            type Query {
-                ${generateQueryCode()}
-            }
-        
-        type Mutation {
-            ${generateMutationCode()}
-        } \`
-        
+        ${generateQueryCode()}
+        ${generateMutationCode()}
         
         const db_url = 'mongodb+srv://aviral:1702@cluster0.i2jaaun.mongodb.net/products';
-        
         
         const connect = async () => {
             await mongoose.connect(db_url, { useNewUrlParser: true });
         }
         
-        
         exports.resolvers = {
             Query: {
-        
                 getProductsList: async (parent, args) => {
                     await connect();
                     const result = ProductModel.find({}).then((res) => {
@@ -150,7 +154,6 @@ const EntityHandler = () => {
                         }
                     })
                     return result;
-        
                 },
                 getProduct: async (parent, args) => {
                     await connect();
@@ -160,7 +163,6 @@ const EntityHandler = () => {
                         }
                     })
                     return result;
-        
                 }
             },
         
@@ -217,29 +219,28 @@ const EntityHandler = () => {
                     } catch (error) {
                         console.log('Error while delete:',error);
                         return false;
-                    }
-                    
+                    }    
                 }
             }
         }
-        
-        
         `
     }
 
+    //Copy to clipboard
     const handleCopyClick = async () => {
         try {
             await navigator.clipboard.writeText(text);
-            alert("Copied to clipboard!");
+            toast.success("Copied to clipboard!");
         } catch (err) {
             console.error(
                 "Unable to copy to clipboard.",
                 err
             );
-            alert("Copy to clipboard failed.");
+            toast.error("Copy to clipboard failed.");
         }
     };
 
+    //Set Entity Name
     const addEntity = () => {
         setEntityList([...entityList, {
             name: 'Untitled Entity',
@@ -252,6 +253,7 @@ const EntityHandler = () => {
         }])
     }
 
+    //Set Query Name
     const addQuery = () => {
         setQueryList([...queryList, {
             name: 'Untitled Query',
@@ -266,8 +268,23 @@ const EntityHandler = () => {
         }])
     }
 
+    //Set Mutation Name
+    const addMutation = () => {
+        if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
+        setMutationList([...mutationList, {
+            name: 'Untitled Mutation',
+            parameters: [
+                {
+                    name: 'id',
+                    type: 'ID',
+                    required: true
+                }
+            ],
+            returnType: 'Product'
+        }])
+    }
 
-
+    //Set Fields of Entity
     const addField = (index) => {
         if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
         const newEntityList = [...entityList];
@@ -280,6 +297,7 @@ const EntityHandler = () => {
         fieldTypeRef.current.value = '';
     }
 
+    //Set Parameters of Query
     const addParameter = (index) => {
         if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
         const newQueryList = [...queryList];
@@ -292,8 +310,29 @@ const EntityHandler = () => {
         fieldTypeRef.current.value = '';
     }
 
+    //Set Parameters of Mutation
+    const addMutationParameter = (index) => {
+        if (fieldNameRef.current.value === '' || fieldTypeRef.current.value === '') return;
+        const newMutationList = [...mutationList];
+        newMutationList[index].parameters.push({
+            name: fieldNameRef.current.value,
+            type: fieldTypeRef.current.value
+        })
+        setMutationList(newMutationList);
+        fieldNameRef.current.value = '';
+        fieldTypeRef.current.value = '';
+    }
+
+    //Remove Field of Entity
+    const removeField = (index) => {
+        const newEntityList = [...entityList];
+        newEntityList[index].fields.splice(index, 1);
+        setEntityList(newEntityList);
+    }
+
     return (
         <div className="row p-4">
+            {/* For Operations Code */}
             <div className='col-md-5'>
                 <div className='card'>
                     <div className='card-header'>
@@ -309,7 +348,8 @@ const EntityHandler = () => {
                                                     entity.fields.map((field) => {
                                                         return <li className='list-group-item d-flex justify-content-between'>
                                                             <p>{field.name} : {field.type}</p>
-                                                            <button className='btn btn-danger'>Remove</button>
+                                                            <button
+                                                                className='btn btn-danger' onClick={e => { removeField }}>Remove</button>
                                                         </li>
                                                     })
                                                 }
@@ -317,12 +357,14 @@ const EntityHandler = () => {
                                             <div className="input-group">
                                                 <input type="text" className="form-control" ref={fieldNameRef} />
                                                 <input type="text" className="form-control" ref={fieldTypeRef} />
-                                                <button className='btn btn-primary' onClick={e => addField(index)}>Add Field</button>
+                                                <button
+                                                    className='btn btn-primary'
+                                                    onClick={e => addField(index)}>Add Field</button>
                                             </div>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 })
-                                
+
                             }
 
                         </Accordion>
@@ -339,7 +381,8 @@ const EntityHandler = () => {
                                                     query.parameters.map((parameter) => {
                                                         return <li className='list-group-item d-flex justify-content-between'>
                                                             <p>{parameter.name} : {parameter.type}</p>
-                                                            <button className='btn btn-danger'>Remove</button>
+                                                            <button
+                                                                className='btn btn-danger'>Remove</button>
                                                         </li>
                                                     })
                                                 }
@@ -347,16 +390,47 @@ const EntityHandler = () => {
                                             <div className="input-group">
                                                 <input type="text" className="form-control" ref={fieldNameRef} />
                                                 <input type="text" className="form-control" ref={fieldTypeRef} />
-                                                <button className='btn btn-primary' onClick={e => addParameter(index)}>Add Parameter</button>
+                                                <button
+                                                    className='btn btn-primary'
+                                                    onClick={e => addParameter(index)}>Add Parameter</button>
                                             </div>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 })
-                                
                             }
-
                         </Accordion>
                         <button className='btn btn-primary' onClick={addQuery}>Add Query</button>
+
+                        {/* <Accordion defaultActiveKey="0">
+                            {
+                                mutationList.map((entity, index) => {
+                                    return <Accordion.Item eventKey={index}>
+                                        <Accordion.Header>{mutationList.name}</Accordion.Header>
+                                        <Accordion.Body>
+                                            <ul className='list-group'>
+                                                {
+                                                    mutationList.parameters.map((parameter) => {
+                                                        return <li className='list-group-item d-flex justify-content-between'>
+                                                            <p>{parameter.name} : {parameter.type}</p>
+                                                            <button 
+                                                            className='btn btn-danger'>Remove</button>
+                                                        </li>
+                                                    })
+                                                }
+                                            </ul>
+                                            <div className="input-group">
+                                                <input type="text" className="form-control" ref={fieldNameRef} />
+                                                <input type="text" className="form-control" ref={fieldTypeRef} />
+                                                <button 
+                                                className='btn btn-primary' 
+                                                onClick={e => addMutationParameter(index)}>Add Mutation Parameter</button>
+                                            </div>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                })  
+                            }
+                        </Accordion> */}
+                        <button className='btn btn-primary' onClick={addMutation}>Add Mutation</button>
                     </div>
                     <div className="card-body">
 
@@ -367,13 +441,15 @@ const EntityHandler = () => {
                     </div>
                 </div>
             </div>
+            {/* For GraphQLSchema.js code */}
             <div className="col-md-7">
                 <div className="card">
                     <div className="card-header d-flex justify-content-between">
                         <h4>GraphQLSchema.js Code</h4>
-                        <button onClick={handleCopyClick} className=''>
+                        <button onClick={handleCopyClick} className='btn btn-primary btn-outline-primary btn-rounded'>
                             <i className="fa-regular fa-copy"></i>  Copy
                         </button>
+                        <Toaster />
                     </div>
                     <div className="card-body">
                         <Editor theme='vs-dark' height="50vh" defaultLanguage="javascript" value={generateSchema()} />

@@ -32,10 +32,8 @@ const connect = async () => {
     await mongoose.connect(db_url, {useNewUrlParser: true, useUnifiedTopology: true});
 }
 
-
 exports.resolvers = {
     Query: {
-
         getProductsList: async (parent, args) => {
             await connect();
             const result = ProductModel.find({}).then((res) => {
@@ -44,7 +42,6 @@ exports.resolvers = {
                 }
             })
             return result;
-
         },
         getProduct: async (parent, args) => {
             await connect();
@@ -54,7 +51,6 @@ exports.resolvers = {
                 }
             })
             return result;
-
         }
     },
 
@@ -88,20 +84,6 @@ exports.resolvers = {
                 return res;
             })
             return result;
-            // const result = ProductModel.insertMany([
-            //     {
-            //         productName: args.productName,
-            //         category: args.category,
-            //         price: args.price,
-            //         imgPath: args.imgPath,
-            //         colors: args.colors
-            //     }
-            // ]).then((res) => {
-            //     if (res) {
-            //         return res;
-            //     }
-            // })
-            // return result;
         },
         deleteProduct:  async (parent, args) => {
             try {
@@ -111,8 +93,7 @@ exports.resolvers = {
             } catch (error) {
                 console.log('Error while delete:',error);
                 return false;
-            }
-            
+            }   
         }
     }
 }

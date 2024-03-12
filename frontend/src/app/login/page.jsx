@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormik } from 'formik';
-import { enqueueSnackbar } from 'notistack';
-import toast from 'react-hot-toast';
+import toast,{Toaster} from 'react-hot-toast';
 import * as css from './login.css';
 
 const Login = () => {
@@ -42,7 +41,6 @@ const Login = () => {
         <div className="card" id='card'>
           <div className="card-body">
             <h1 id='title'>Have an Account ?</h1>
-
             <hr />
             <form onSubmit={loginForm.handleSubmit}>
               <i class="fa-solid fa-envelope"></i>
@@ -69,6 +67,7 @@ const Login = () => {
 
               <button type="submit"
                 className="btn btn-danger mb-2" id='button'>Login</button>
+                <Toaster />
 
               <div>
                 <span>

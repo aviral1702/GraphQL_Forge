@@ -67,7 +67,7 @@ const GraphQLClient = () => {
                             <label htmlFor="variables">Variables</label>
                             <textarea className="form-control" id="variables" rows="5" onChange={(e) => setVariables(e.target.value)}
                                 value={variables}></textarea>
-                                {/* <Editor theme='vs-dark' id="variables" height="30vh" defaultLanguage="javascript" value={variables} onChange={(e) => setVariables(e.target.value)} /> */}
+                            {/* <Editor theme='vs-dark' id="variables" height="30vh" defaultLanguage="javascript" value={variables} onChange={(e) => setVariables(e.target.value)} /> */}
                         </div>
                         <div className="text-center">
                             <button onClick={makeQuery} className="btn btn-primary mt-3 mb-5  ">Make Query</button>
